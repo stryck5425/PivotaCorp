@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      // Permet la mise à jour si l'utilisateur est authentifié, est le propriétaire du document,
+      // et que SEUL le champ 'personalRecordTimeSpent' est modifié.
+      allow update: if request.auth != null && request.auth.uid == userId &&
+                       request.resource.data.diff(resource.data).affectedKeys().hasOnly(['personalRecordTimeSpent']);
+      allow delete: if false;
+    }
+
+    // Usernames collection
+    match /usernames/{username} {
+      allow read: if true; // lecture ouverte pour vérification d'unicité
+      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+  }
+}
