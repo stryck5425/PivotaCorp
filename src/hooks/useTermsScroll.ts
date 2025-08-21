@@ -115,7 +115,7 @@ export function useTermsScroll(): UseTermsScrollReturn {
           clausesRead: clausesEverSeen.current.size, // Use the cumulative size
         }));
       },
-      { threshold: 0.5 } // Consider clause "read" when 50% visible
+      { threshold: 0.1 } // Lowered threshold to 0.1 for easier detection
     );
 
     displayedClauses.forEach((clause) => {
@@ -139,6 +139,7 @@ export function useTermsScroll(): UseTermsScrollReturn {
           ...prev,
           scrollDistance: scrollDistanceInPixels, // Store in pixels
         }));
+        // console.log("Scroll position:", scrollDistanceInPixels); // Temporary log for debugging
       }
     };
 
@@ -149,7 +150,7 @@ export function useTermsScroll(): UseTermsScrollReturn {
       }));
     }, STATS_UPDATE_INTERVAL);
 
-    // Attach/re-attach scroll listener when scrollContainerRef.current changes
+    // Attach scroll listener once the ref is available
     const currentScrollContainer = scrollContainerRef.current;
     if (currentScrollContainer) {
       currentScrollContainer.addEventListener("scroll", handleScroll);
@@ -161,7 +162,7 @@ export function useTermsScroll(): UseTermsScrollReturn {
         currentScrollContainer.removeEventListener("scroll", handleScroll);
       }
     };
-  }, [scrollContainerRef.current]); // Dependency on scrollContainerRef.current
+  }, [scrollContainerRef]); // Depend on the ref object itself, not its .current property
 
   // Update personal record
   useEffect(() => {
