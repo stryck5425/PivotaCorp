@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { absurdClauses, lawCategories } from "@/constants/absurdClauses";
+import { useAuth } from "./useAuth"; // Import useAuth
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore"; // Import Firestore functions
+import { db } from "@/lib/firebase"; // Import db instance
 
 interface Clause {
   id: string;
@@ -28,6 +31,7 @@ interface UseTermsScrollReturn {
 const INITIAL_LOAD_COUNT = 20;
 const LOAD_MORE_COUNT = 10;
 const STATS_UPDATE_INTERVAL = 1000; // 1 second
+const FIRESTORE_SAVE_INTERVAL = 5000; // 5 seconds
 
 const LOCAL_STORAGE_KEY = "corporate_terms_personal_record";
 
@@ -52,25 +56,49 @@ function generateClause(index: number): Clause {
 }
 
 export function useTermsScroll(): UseTermsScrollReturn {
+  const { user, loading: authLoading } = useAuth(); // Get user and auth loading state
   const [displayedClauses, setDisplayedClauses] = useState<Clause[]>([]);
   const [currentSessionStats, setCurrentSessionStats] = useState<Stats>({
     timeSpent: 0,
   });
-  const [personalRecordStats, setPersonalRecordStats] = useState<Stats>(() => {
-    try {
-      const storedStats = localStorage.getItem(LOCAL_STORAGE_KEY);
-      return storedStats ? JSON.parse(storedStats) : { timeSpent: 0 };
-    } catch (error) {
-      console.error("Failed to load personal record from localStorage:", error);
-      return { timeSpent: 0 };
-    }
-  });
+  const [personalRecordStats, setPersonalRecordStats] = useState<Stats>(() => ({ timeSpent: 0 })); // Initialize with default
   const [loadingMore, setLoadingMore] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const clauseRefs = useRef<Map<string, HTMLElement>>(new Map());
-  // Removed clausesEverSeen ref as clausesRead is no longer tracked
   const totalClausesGenerated = useRef(0);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+  // Load personal record from Firestore or Local Storage on auth state change
+  useEffect(() => {
+    const loadPersonalRecord = async () => {
+      if (authLoading) return;
+
+      if (user) {
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          const data = userDocSnap.data();
+          setPersonalRecordStats({ timeSpent: data.personalRecordTimeSpent || 0 });
+        } else {
+          // If user doc doesn't exist (shouldn't happen after signup), create it
+          await setDoc(userDocRef, { username: user.email?.split('@')[0], personalRecordTimeSpent: 0, createdAt: new Date() });
+          setPersonalRecordStats({ timeSpent: 0 });
+        }
+      } else {
+        // Not logged in, load from local storage
+        try {
+          const storedStats = localStorage.getItem(LOCAL_STORAGE_KEY);
+          setPersonalRecordStats(storedStats ? JSON.parse(storedStats) : { timeSpent: 0 });
+        } catch (error) {
+          console.error("Failed to load personal record from localStorage:", error);
+          setPersonalRecordStats({ timeSpent: 0 });
+        }
+      }
+    };
+
+    loadPersonalRecord();
+  }, [user, authLoading]);
+
 
   const loadMoreClauses = useCallback(() => {
     if (loadingMore) return;
@@ -96,9 +124,7 @@ export function useTermsScroll(): UseTermsScrollReturn {
     totalClausesGenerated.current = INITIAL_LOAD_COUNT;
   }, []);
 
-  // Removed Intersection Observer for clauses read
-
-  // Time spent tracking (scroll distance tracking removed)
+  // Time spent tracking
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSessionStats((prev) => ({
@@ -112,20 +138,46 @@ export function useTermsScroll(): UseTermsScrollReturn {
     };
   }, []);
 
-  // Update personal record
+  // Update personal record and save to Firestore/Local Storage
   useEffect(() => {
     setPersonalRecordStats((prev) => {
-      const newRecord = {
-        timeSpent: Math.max(prev.timeSpent, currentSessionStats.timeSpent),
-      };
-      try {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newRecord));
-      } catch (error) {
-        console.error("Failed to save personal record to localStorage:", error);
+      const newRecordTime = Math.max(prev.timeSpent, currentSessionStats.timeSpent);
+      const newRecord = { timeSpent: newRecordTime };
+
+      if (!user) { // Only save to local storage if not logged in
+        try {
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newRecord));
+        } catch (error) {
+          console.error("Failed to save personal record to localStorage:", error);
+        }
       }
       return newRecord;
     });
-  }, [currentSessionStats]);
+  }, [currentSessionStats.timeSpent, user]); // Depend on currentSessionStats.timeSpent and user
+
+  // Save to Firestore every 5 seconds if logged in
+  useEffect(() => {
+    let firestoreSaveInterval: NodeJS.Timeout;
+    if (user) {
+      firestoreSaveInterval = setInterval(async () => {
+        const userDocRef = doc(db, 'users', user.uid);
+        try {
+          await updateDoc(userDocRef, {
+            personalRecordTimeSpent: personalRecordStats.timeSpent,
+          });
+          // console.log("Personal record saved to Firestore:", personalRecordStats.timeSpent);
+        } catch (error) {
+          console.error("Failed to save personal record to Firestore:", error);
+        }
+      }, FIRESTORE_SAVE_INTERVAL);
+    }
+
+    return () => {
+      if (firestoreSaveInterval) {
+        clearInterval(firestoreSaveInterval);
+      }
+    };
+  }, [user, personalRecordStats.timeSpent]); // Depend on user and personalRecordStats.timeSpent
 
   // Infinite scroll observer
   useEffect(() => {

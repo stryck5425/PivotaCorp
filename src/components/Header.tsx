@@ -2,15 +2,18 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
-import { Link } from 'react-router-dom'; // Import Link for navigation
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth'; // Import useAuth
 
 interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   companyName: string;
   tagline: string;
-  onMenuClick?: () => void; // New prop for menu button click
+  onMenuClick?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ companyName, tagline, className, onMenuClick, ...props }) => {
+  const { user, logout, loading } = useAuth(); // Use the auth hook
+
   return (
     <header
       className={cn(
@@ -29,23 +32,36 @@ const Header: React.FC<HeaderProps> = ({ companyName, tagline, className, onMenu
           </p>
         </div>
         <nav className="ml-auto flex items-center space-x-4">
-          {/* Legal Mentions button - now always visible */}
+          <Link to="/world-record"> {/* New link for World Record */}
+            <Button variant="ghost">
+              World Record
+            </Button>
+          </Link>
           <Link to="/legal-mentions">
             <Button variant="ghost">
               Legal Mentions
             </Button>
           </Link>
-          {/* Menu button for small screens */}
+          {user ? (
+            <Button variant="ghost" onClick={logout} disabled={loading}>
+              Logout
+            </Button>
+          ) : (
+            <Link to="/auth">
+              <Button variant="ghost">
+                Login / Sign Up
+              </Button>
+            </Link>
+          )}
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden" // Only visible on small screens
+            className="lg:hidden"
             onClick={onMenuClick}
           >
             <Menu className="h-6 w-6" />
             <span className="sr-only">Toggle sidebar</span>
           </Button>
-          {/* Navigation items can go here if needed */}
         </nav>
       </div>
     </header>

@@ -5,7 +5,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import LegalMentions from "./pages/LegalMentions"; // Import the new LegalMentions page
+import LegalMentions from "./pages/LegalMentions";
+import AuthPage from "./pages/AuthPage";
+import WorldRecord from "./pages/WorldRecord"; // Import the new WorldRecord page
+import { AuthProvider } from "./hooks/useAuth";
 
 const queryClient = new QueryClient();
 
@@ -15,12 +18,16 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/legal-mentions" element={<LegalMentions />} /> {/* New route for Legal Mentions */}
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/legal-mentions" element={<LegalMentions />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/world-record" element={<WorldRecord />} /> {/* New route for WorldRecord */}
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
