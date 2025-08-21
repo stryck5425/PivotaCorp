@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useTermsScroll } from "@/hooks/useTermsScroll";
-import ClauseItem from "./ClauseItem";
 import { MadeWithDyad } from "./made-with-dyad";
 import { Loader2 } from "lucide-react";
 import { cn } from '@/lib/utils';
@@ -15,19 +14,13 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ className, ...p
     loadingMore,
     loadMoreRef,
     clauseRefs,
-    scrollContainerRef, // Access the ref from the hook
+    scrollContainerRef,
   } = useTermsScroll();
-
-  // Assign the scroll container ref to the main div
-  useEffect(() => {
-    if (scrollContainerRef) {
-      (scrollContainerRef as React.MutableRefObject<HTMLElement | null>).current = document.getElementById('terms-scroll-container');
-    }
-  }, [scrollContainerRef]);
 
   return (
     <div
-      id="terms-scroll-container" // Assign an ID for the ref
+      id="terms-scroll-container"
+      ref={scrollContainerRef} // Correctly assign the ref directly
       className={cn(
         "flex-1 overflow-y-auto p-4 lg:p-8 bg-background text-foreground",
         className
@@ -43,22 +36,28 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ className, ...p
 
       <div className="max-w-4xl mx-auto">
         {displayedClauses.map((clause) => (
-          <ClauseItem
+          <div
             key={clause.id}
             id={clause.id}
-            title={clause.title}
-            content={clause.content}
-            number={clause.number}
-            category={clause.category}
-            lastUpdated={clause.lastUpdated}
-            innerRef={(el) => {
+            ref={(el) => {
               if (el) {
                 clauseRefs.current.set(clause.id, el);
               } else {
                 clauseRefs.current.delete(clause.id);
               }
             }}
-          />
+            className="mb-6 p-4 border border-border rounded-lg bg-card text-card-foreground shadow-sm"
+          >
+            <p className="text-xs text-muted-foreground mb-1">
+              Clause {clause.number} &bull; Category: {clause.category} &bull; Last Updated: {clause.lastUpdated}
+            </p>
+            <h3 className="text-xl font-semibold text-primary mb-2">
+              {clause.title}
+            </h3>
+            <p className="text-base text-foreground leading-relaxed">
+              {clause.content}
+            </p>
+          </div>
         ))}
 
         <div ref={loadMoreRef} className="flex justify-center py-8">
