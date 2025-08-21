@@ -11,8 +11,6 @@ interface Clause {
 }
 
 interface Stats {
-  clausesRead: number;
-  scrollDistance: number; // now in pixels
   timeSpent: number; // in seconds
 }
 
@@ -56,23 +54,21 @@ function generateClause(index: number): Clause {
 export function useTermsScroll(): UseTermsScrollReturn {
   const [displayedClauses, setDisplayedClauses] = useState<Clause[]>([]);
   const [currentSessionStats, setCurrentSessionStats] = useState<Stats>({
-    clausesRead: 0,
-    scrollDistance: 0,
     timeSpent: 0,
   });
   const [personalRecordStats, setPersonalRecordStats] = useState<Stats>(() => {
     try {
       const storedStats = localStorage.getItem(LOCAL_STORAGE_KEY);
-      return storedStats ? JSON.parse(storedStats) : { clausesRead: 0, scrollDistance: 0, timeSpent: 0 };
+      return storedStats ? JSON.parse(storedStats) : { timeSpent: 0 };
     } catch (error) {
       console.error("Failed to load personal record from localStorage:", error);
-      return { clausesRead: 0, scrollDistance: 0, timeSpent: 0 };
+      return { timeSpent: 0 };
     }
   });
   const [loadingMore, setLoadingMore] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const clauseRefs = useRef<Map<string, HTMLElement>>(new Map());
-  const clausesEverSeen = useRef<Set<string>>(new Set()); // Changed to cumulative set
+  // Removed clausesEverSeen ref as clausesRead is no longer tracked
   const totalClausesGenerated = useRef(0);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -100,49 +96,10 @@ export function useTermsScroll(): UseTermsScrollReturn {
     totalClausesGenerated.current = INITIAL_LOAD_COUNT;
   }, []);
 
-  // Intersection Observer for clauses read (cumulative)
+  // Removed Intersection Observer for clauses read
+
+  // Time spent tracking (scroll distance tracking removed)
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            clausesEverSeen.current.add(entry.target.id); // Add to cumulative set
-          }
-          // No 'else' to remove, as it's cumulative
-        });
-        setCurrentSessionStats((prev) => ({
-          ...prev,
-          clausesRead: clausesEverSeen.current.size, // Use the cumulative size
-        }));
-      },
-      { threshold: 0.1 } // Lowered threshold to 0.1 for easier detection
-    );
-
-    displayedClauses.forEach((clause) => {
-      const element = clauseRefs.current.get(clause.id);
-      if (element) {
-        observer.observe(element);
-      }
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [displayedClauses]);
-
-  // Scroll distance and time spent tracking
-  useEffect(() => {
-    const handleScroll = () => {
-      if (scrollContainerRef.current) {
-        const scrollDistanceInPixels = scrollContainerRef.current.scrollTop;
-        setCurrentSessionStats((prev) => ({
-          ...prev,
-          scrollDistance: scrollDistanceInPixels, // Store in pixels
-        }));
-        // console.log("Scroll position:", scrollDistanceInPixels); // Temporary log for debugging
-      }
-    };
-
     const interval = setInterval(() => {
       setCurrentSessionStats((prev) => ({
         ...prev,
@@ -150,26 +107,15 @@ export function useTermsScroll(): UseTermsScrollReturn {
       }));
     }, STATS_UPDATE_INTERVAL);
 
-    // Attach scroll listener once the ref is available
-    const currentScrollContainer = scrollContainerRef.current;
-    if (currentScrollContainer) {
-      currentScrollContainer.addEventListener("scroll", handleScroll);
-    }
-
     return () => {
       clearInterval(interval);
-      if (currentScrollContainer) {
-        currentScrollContainer.removeEventListener("scroll", handleScroll);
-      }
     };
-  }, [scrollContainerRef]); // Depend on the ref object itself, not its .current property
+  }, []);
 
   // Update personal record
   useEffect(() => {
     setPersonalRecordStats((prev) => {
       const newRecord = {
-        clausesRead: Math.max(prev.clausesRead, currentSessionStats.clausesRead),
-        scrollDistance: Math.max(prev.scrollDistance, currentSessionStats.scrollDistance),
         timeSpent: Math.max(prev.timeSpent, currentSessionStats.timeSpent),
       };
       try {
@@ -204,8 +150,7 @@ export function useTermsScroll(): UseTermsScrollReturn {
   }, [loadMoreRef, loadingMore, loadMoreClauses]);
 
   const resetSession = useCallback(() => {
-    setCurrentSessionStats({ clausesRead: 0, scrollDistance: 0, timeSpent: 0 });
-    clausesEverSeen.current.clear(); // Clear cumulative set on reset
+    setCurrentSessionStats({ timeSpent: 0 });
     // Re-initialize clauses to reset the scroll position and content
     const initialClauses: Clause[] = [];
     totalClausesGenerated.current = 0; // Reset total generated count

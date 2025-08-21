@@ -2,11 +2,9 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { cn, formatScrollDistance } from '@/lib/utils'; // Import formatScrollDistance
+import { cn } from '@/lib/utils'; // Import formatScrollDistance is no longer needed
 
 interface Stats {
-  clausesRead: number;
-  scrollDistance: number;
   timeSpent: number;
 }
 
@@ -41,14 +39,6 @@ const Sidebar: React.FC<SidebarProps> = ({ currentSessionStats, personalRecordSt
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <div className="flex justify-between">
-            <span>Clauses Read:</span>
-            <span className="font-medium">{currentSessionStats.clausesRead}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Scroll Distance:</span>
-            <span className="font-medium">{formatScrollDistance(currentSessionStats.scrollDistance)}</span>
-          </div>
-          <div className="flex justify-between">
             <span>Time Spent:</span>
             <span className="font-medium">{formatTime(currentSessionStats.timeSpent)}</span>
           </div>
@@ -60,14 +50,6 @@ const Sidebar: React.FC<SidebarProps> = ({ currentSessionStats, personalRecordSt
           <CardTitle className="text-lg font-semibold">Personal Record</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span>Clauses Read:</span>
-            <span className="font-medium">{personalRecordStats.clausesRead}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Scroll Distance:</span>
-            <span className="font-medium">{formatScrollDistance(personalRecordStats.scrollDistance)}</span>
-          </div>
           <div className="flex justify-between">
             <span>Time Spent:</span>
             <span className="font-medium">{formatTime(personalRecordStats.timeSpent)}</span>
