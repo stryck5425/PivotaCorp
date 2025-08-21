@@ -24,7 +24,7 @@ interface UseTermsScrollReturn {
   loadMoreRef: React.RefObject<HTMLDivElement>;
   resetSession: () => void;
   clauseRefs: React.MutableRefObject<Map<string, HTMLElement>>;
-  scrollContainerRef: React.MutableRefObject<HTMLElement | null>;
+  scrollContainerRef: React.MutableRefObject<HTMLDivElement | null>; // Changed type here
 }
 
 const INITIAL_LOAD_COUNT = 20;
@@ -74,7 +74,7 @@ export function useTermsScroll(): UseTermsScrollReturn {
   const clauseRefs = useRef<Map<string, HTMLElement>>(new Map());
   const clausesEverSeen = useRef<Set<string>>(new Set()); // Changed to cumulative set
   const totalClausesGenerated = useRef(0);
-  const scrollContainerRef = useRef<HTMLElement | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null); // Changed type here
 
   const loadMoreClauses = useCallback(() => {
     if (loadingMore) return;

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useTermsScroll } from "@/hooks/useTermsScroll";
 import { MadeWithDyad } from "./made-with-dyad";
 import { Loader2 } from "lucide-react";
@@ -20,9 +20,9 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ className, ...p
   return (
     <div
       id="terms-scroll-container"
-      ref={scrollContainerRef} // Correctly assign the ref directly
+      ref={scrollContainerRef}
       className={cn(
-        "flex-1 overflow-y-auto p-4 lg:p-8 bg-background text-foreground",
+        "flex-1 overflow-y-auto p-4 lg:p-8 bg-background text-foreground prose dark:prose-invert", // Added prose classes for better typography
         className
       )}
       {...props}
@@ -46,7 +46,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ className, ...p
                 clauseRefs.current.delete(clause.id);
               }
             }}
-            className="mb-6 p-4 border border-border rounded-lg bg-card text-card-foreground shadow-sm"
+            className="mb-6" // Removed card styling
           >
             <p className="text-xs text-muted-foreground mb-1">
               Clause {clause.number} &bull; Category: {clause.category} &bull; Last Updated: {clause.lastUpdated}
