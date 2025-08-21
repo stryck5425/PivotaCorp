@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTermsScroll } from "@/hooks/useTermsScroll";
-import { MadeWithDyad } from "./made-with-dyad";
 import { Loader2 } from "lucide-react";
 import { cn } from '@/lib/utils';
 
@@ -66,7 +65,6 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ className, ...p
           )}
         </div>
       </div>
-      <MadeWithDyad />
     </div>
   );
 };
