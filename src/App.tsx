@@ -7,8 +7,8 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import LegalMentions from "./pages/LegalMentions";
 import AuthPage from "./pages/AuthPage";
-import WorldRecord from "./pages/WorldRecord"; // Import the new WorldRecord page
-import { AuthProvider } from "./hooks/useAuth";
+import WorldRecord from "./pages/WorldRecord";
+import { AuthProvider } from "./hooks/useAuth"; // Chemin d'importation mis à jour
 
 const queryClient = new QueryClient();
 
@@ -23,7 +23,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/legal-mentions" element={<LegalMentions />} />
             <Route path="/auth" element={<AuthPage />} />
-            <Route path="/world-record" element={<WorldRecord />} /> {/* New route for WorldRecord */}
+            <Route path="/world-record" element={<WorldRecord />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

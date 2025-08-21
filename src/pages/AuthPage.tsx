@@ -1,7 +1,7 @@
 import React from 'react';
 import AuthForm from '@/components/AuthForm';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth'; // Chemin d'importation mis à jour
 import { useEffect } from 'react';
 
 const AuthPage: React.FC = () => {

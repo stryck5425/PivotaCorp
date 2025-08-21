@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { absurdClauses, lawCategories } from "@/constants/absurdClauses";
-import { useAuth } from "./useAuth"; // Import useAuth
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore"; // Import Firestore functions
-import { db } from "@/lib/firebase"; // Import db instance
+import { useAuth } from "./useAuth"; // Chemin d'importation mis à jour
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 interface Clause {
   id: string;
@@ -56,12 +56,12 @@ function generateClause(index: number): Clause {
 }
 
 export function useTermsScroll(): UseTermsScrollReturn {
-  const { user, loading: authLoading } = useAuth(); // Get user and auth loading state
+  const { user, loading: authLoading } = useAuth();
   const [displayedClauses, setDisplayedClauses] = useState<Clause[]>([]);
   const [currentSessionStats, setCurrentSessionStats] = useState<Stats>({
     timeSpent: 0,
   });
-  const [personalRecordStats, setPersonalRecordStats] = useState<Stats>(() => ({ timeSpent: 0 })); // Initialize with default
+  const [personalRecordStats, setPersonalRecordStats] = useState<Stats>(() => ({ timeSpent: 0 }));
   const [loadingMore, setLoadingMore] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const clauseRefs = useRef<Map<string, HTMLElement>>(new Map());
