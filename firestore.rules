@@ -3,7 +3,7 @@ service cloud.firestore {
   match /databases/{database}/documents {
     // Users collection
     match /users/{userId} {
-      allow read: if request.auth != null;
+      allow read: if true; // Permet la lecture pour tous (connectés ou non)
       allow create: if request.auth != null && request.auth.uid == userId;
       // Permet la mise à jour si l'utilisateur est authentifié, est le propriétaire du document,
       // et que SEUL le champ 'personalRecordTimeSpent' est modifié.

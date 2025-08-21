@@ -9,6 +9,10 @@ const Index = () => {
   const { currentSessionStats, personalRecordStats, resetSession } = useTermsScroll();
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
 
+  const handleLinkClick = () => {
+    setIsSheetOpen(false); // Close the sheet when a link is clicked
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header
@@ -38,6 +42,7 @@ const Index = () => {
                 resetSession();
                 setIsSheetOpen(false); // Close sheet after reset
               }}
+              onLinkClick={handleLinkClick} // Pass the new prop here
               className="w-full h-full border-none" // This will now correctly apply to the mobile sidebar
             />
           </SheetContent>

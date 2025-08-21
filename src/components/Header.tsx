@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth'; // Import useAuth
+import NavigationLinks from './NavigationLinks'; // Import the new component
 
 interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   companyName: string;
@@ -12,8 +12,6 @@ interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Header: React.FC<HeaderProps> = ({ companyName, tagline, className, onMenuClick, ...props }) => {
-  const { user, logout, loading } = useAuth(); // Use the auth hook
-
   return (
     <header
       className={cn(
@@ -32,27 +30,10 @@ const Header: React.FC<HeaderProps> = ({ companyName, tagline, className, onMenu
           </p>
         </div>
         <nav className="ml-auto flex items-center space-x-4">
-          <Link to="/world-record"> {/* New link for World Record */}
-            <Button variant="ghost">
-              World Record
-            </Button>
-          </Link>
-          <Link to="/legal-mentions">
-            <Button variant="ghost">
-              Legal Mentions
-            </Button>
-          </Link>
-          {user ? (
-            <Button variant="ghost" onClick={logout} disabled={loading}>
-              Logout
-            </Button>
-          ) : (
-            <Link to="/auth">
-              <Button variant="ghost">
-                Login / Sign Up
-              </Button>
-            </Link>
-          )}
+          {/* Desktop navigation links */}
+          <NavigationLinks className="hidden lg:flex" />
+          
+          {/* Mobile menu button */}
           <Button
             variant="ghost"
             size="icon"
