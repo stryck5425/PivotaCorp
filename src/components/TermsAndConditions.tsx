@@ -2,6 +2,7 @@ import React from 'react';
 import { useTermsScroll } from "@/hooks/useTermsScroll";
 import { Loader2 } from "lucide-react";
 import { cn } from '@/lib/utils';
+import { Link } from 'react-router-dom'; // Import Link for navigation
 
 interface TermsAndConditionsProps extends React.HTMLAttributes<HTMLDivElement> {
   // No specific props needed for now, but can be extended
@@ -63,6 +64,16 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ className, ...p
           {loadingMore && (
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           )}
+        </div>
+
+        <div className="text-center mt-12 pt-8 border-t border-muted-foreground/20">
+          <p className="text-sm text-muted-foreground">
+            Pour une explication plus claire de ce site, veuillez consulter nos{" "}
+            <Link to="/legal-mentions" className="text-blue-500 hover:underline">
+              Mentions Légales
+            </Link>
+            .
+          </p>
         </div>
       </div>
     </div>
