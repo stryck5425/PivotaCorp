@@ -85,7 +85,7 @@ export function useTermsScroll(): UseTermsScrollReturn {
         newClauses.push(generateClause(totalClausesGenerated.current + i));
       }
       setDisplayedClauses((prev) => [...prev, ...newClauses]);
-      totalClaencesGenerated.current += LOAD_MORE_COUNT;
+      totalClausesGenerated.current += LOAD_MORE_COUNT;
       setLoadingMore(false);
     }, 500);
   }, [loadingMore]);
