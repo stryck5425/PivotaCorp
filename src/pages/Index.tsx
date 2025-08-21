@@ -22,7 +22,7 @@ const Index = () => {
           currentSessionStats={currentSessionStats}
           personalRecordStats={personalRecordStats}
           onResetSession={resetSession}
-          className="hidden lg:block" // Only visible on large screens
+          className="hidden lg:block" // Apply hidden lg:block here for desktop sidebar
         />
 
         {/* Mobile Sidebar (Sheet) */}
@@ -38,7 +38,7 @@ const Index = () => {
                 resetSession();
                 setIsSheetOpen(false); // Close sheet after reset
               }}
-              className="w-full h-full border-none" // Adjust styling for sheet content
+              className="w-full h-full border-none" // This will now correctly apply to the mobile sidebar
             />
           </SheetContent>
         </Sheet>

@@ -12,7 +12,7 @@ interface Clause {
 
 interface Stats {
   clausesRead: number;
-  scrollDistance: number; // in pixels
+  scrollDistance: number; // in meters
   timeSpent: number; // in seconds
 }
 
@@ -23,11 +23,14 @@ interface UseTermsScrollReturn {
   loadingMore: boolean;
   loadMoreRef: React.RefObject<HTMLDivElement>;
   resetSession: () => void;
+  clauseRefs: React.MutableRefObject<Map<string, HTMLElement>>;
+  scrollContainerRef: React.MutableRefObject<HTMLElement | null>;
 }
 
 const INITIAL_LOAD_COUNT = 20;
 const LOAD_MORE_COUNT = 10;
 const STATS_UPDATE_INTERVAL = 1000; // 1 second
+const PIXELS_PER_METER = 1000; // Conceptual conversion: 1000 pixels = 1 meter
 
 const LOCAL_STORAGE_KEY = "corporate_terms_personal_record";
 
@@ -70,7 +73,7 @@ export function useTermsScroll(): UseTermsScrollReturn {
   const [loadingMore, setLoadingMore] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const clauseRefs = useRef<Map<string, HTMLElement>>(new Map());
-  const clausesInView = useRef<Set<string>>(new Set());
+  const clausesEverSeen = useRef<Set<string>>(new Set()); // Changed to cumulative set
   const totalClausesGenerated = useRef(0);
   const scrollContainerRef = useRef<HTMLElement | null>(null);
 
@@ -98,20 +101,19 @@ export function useTermsScroll(): UseTermsScrollReturn {
     totalClausesGenerated.current = INITIAL_LOAD_COUNT;
   }, []);
 
-  // Intersection Observer for clauses read
+  // Intersection Observer for clauses read (cumulative)
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            clausesInView.current.add(entry.target.id);
-          } else {
-            clausesInView.current.delete(entry.target.id);
+            clausesEverSeen.current.add(entry.target.id); // Add to cumulative set
           }
+          // No 'else' to remove, as it's cumulative
         });
         setCurrentSessionStats((prev) => ({
           ...prev,
-          clausesRead: clausesInView.current.size,
+          clausesRead: clausesEverSeen.current.size, // Use the cumulative size
         }));
       },
       { threshold: 0.5 } // Consider clause "read" when 50% visible
@@ -133,9 +135,11 @@ export function useTermsScroll(): UseTermsScrollReturn {
   useEffect(() => {
     const handleScroll = () => {
       if (scrollContainerRef.current) {
+        const scrollDistanceInPixels = scrollContainerRef.current.scrollTop;
+        const scrollDistanceInMeters = scrollDistanceInPixels / PIXELS_PER_METER; // Convert to meters
         setCurrentSessionStats((prev) => ({
           ...prev,
-          scrollDistance: scrollContainerRef.current?.scrollTop || 0,
+          scrollDistance: scrollDistanceInMeters,
         }));
       }
     };
@@ -200,7 +204,7 @@ export function useTermsScroll(): UseTermsScrollReturn {
 
   const resetSession = useCallback(() => {
     setCurrentSessionStats({ clausesRead: 0, scrollDistance: 0, timeSpent: 0 });
-    clausesInView.current.clear();
+    clausesEverSeen.current.clear(); // Clear cumulative set on reset
     // Re-initialize clauses to reset the scroll position and content
     const initialClauses: Clause[] = [];
     totalClausesGenerated.current = 0; // Reset total generated count
@@ -221,7 +225,7 @@ export function useTermsScroll(): UseTermsScrollReturn {
     loadingMore,
     loadMoreRef,
     resetSession,
-    clauseRefs: clauseRefs, // Expose clauseRefs for TermsAndConditions component
-    scrollContainerRef: scrollContainerRef, // Expose scrollContainerRef
+    clauseRefs: clauseRefs,
+    scrollContainerRef: scrollContainerRef,
   };
 }

@@ -30,7 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentSessionStats, personalRecordSt
   return (
     <aside
       className={cn(
-        "hidden lg:block w-64 p-4 border-r bg-sidebar sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto",
+        "w-64 p-4 border-r bg-sidebar sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto", // Removed hidden lg:block
         className
       )}
       {...props}
@@ -46,7 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentSessionStats, personalRecordSt
           </div>
           <div className="flex justify-between">
             <span>Scroll Distance:</span>
-            <span className="font-medium">{currentSessionStats.scrollDistance.toFixed(0)} px</span>
+            <span className="font-medium">{currentSessionStats.scrollDistance.toFixed(2)} m</span>
           </div>
           <div className="flex justify-between">
             <span>Time Spent:</span>
@@ -66,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentSessionStats, personalRecordSt
           </div>
           <div className="flex justify-between">
             <span>Scroll Distance:</span>
-            <span className="font-medium">{personalRecordStats.scrollDistance.toFixed(0)} px</span>
+            <span className="font-medium">{personalRecordStats.scrollDistance.toFixed(2)} m</span>
           </div>
           <div className="flex justify-between">
             <span>Time Spent:</span>
