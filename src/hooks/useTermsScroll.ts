@@ -12,7 +12,7 @@ interface Clause {
 
 interface Stats {
   clausesRead: number;
-  scrollDistance: number; // in meters
+  scrollDistance: number; // now in pixels
   timeSpent: number; // in seconds
 }
 
@@ -30,7 +30,6 @@ interface UseTermsScrollReturn {
 const INITIAL_LOAD_COUNT = 20;
 const LOAD_MORE_COUNT = 10;
 const STATS_UPDATE_INTERVAL = 1000; // 1 second
-const PIXELS_PER_METER = 1000; // Conceptual conversion: 1000 pixels = 1 meter
 
 const LOCAL_STORAGE_KEY = "corporate_terms_personal_record";
 
@@ -86,7 +85,7 @@ export function useTermsScroll(): UseTermsScrollReturn {
         newClauses.push(generateClause(totalClausesGenerated.current + i));
       }
       setDisplayedClauses((prev) => [...prev, ...newClauses]);
-      totalClausesGenerated.current += LOAD_MORE_COUNT;
+      totalClaencesGenerated.current += LOAD_MORE_COUNT;
       setLoadingMore(false);
     }, 500);
   }, [loadingMore]);
@@ -136,10 +135,9 @@ export function useTermsScroll(): UseTermsScrollReturn {
     const handleScroll = () => {
       if (scrollContainerRef.current) {
         const scrollDistanceInPixels = scrollContainerRef.current.scrollTop;
-        const scrollDistanceInMeters = scrollDistanceInPixels / PIXELS_PER_METER; // Convert to meters
         setCurrentSessionStats((prev) => ({
           ...prev,
-          scrollDistance: scrollDistanceInMeters,
+          scrollDistance: scrollDistanceInPixels, // Store in pixels
         }));
       }
     };

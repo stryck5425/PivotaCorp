@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { cn } from '@/lib/utils';
+import { cn, formatScrollDistance } from '@/lib/utils'; // Import formatScrollDistance
 
 interface Stats {
   clausesRead: number;
@@ -30,7 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentSessionStats, personalRecordSt
   return (
     <aside
       className={cn(
-        "w-64 p-4 border-r bg-sidebar sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto", // Removed hidden lg:block
+        "w-64 p-4 border-r bg-sidebar sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto",
         className
       )}
       {...props}
@@ -46,7 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentSessionStats, personalRecordSt
           </div>
           <div className="flex justify-between">
             <span>Scroll Distance:</span>
-            <span className="font-medium">{currentSessionStats.scrollDistance.toFixed(2)} m</span>
+            <span className="font-medium">{formatScrollDistance(currentSessionStats.scrollDistance)}</span>
           </div>
           <div className="flex justify-between">
             <span>Time Spent:</span>
@@ -66,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentSessionStats, personalRecordSt
           </div>
           <div className="flex justify-between">
             <span>Scroll Distance:</span>
-            <span className="font-medium">{personalRecordStats.scrollDistance.toFixed(2)} m</span>
+            <span className="font-medium">{formatScrollDistance(personalRecordStats.scrollDistance)}</span>
           </div>
           <div className="flex justify-between">
             <span>Time Spent:</span>
