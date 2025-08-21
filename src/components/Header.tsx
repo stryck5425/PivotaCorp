@@ -1,12 +1,15 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Menu } from 'lucide-react';
 
 interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   companyName: string;
   tagline: string;
+  onMenuClick?: () => void; // New prop for menu button click
 }
 
-const Header: React.FC<HeaderProps> = ({ companyName, tagline, className, ...props }) => {
+const Header: React.FC<HeaderProps> = ({ companyName, tagline, className, onMenuClick, ...props }) => {
   return (
     <header
       className={cn(
@@ -25,6 +28,16 @@ const Header: React.FC<HeaderProps> = ({ companyName, tagline, className, ...pro
           </p>
         </div>
         <nav className="ml-auto flex items-center space-x-4">
+          {/* Menu button for small screens */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden" // Only visible on small screens
+            onClick={onMenuClick}
+          >
+            <Menu className="h-6 w-6" />
+            <span className="sr-only">Toggle sidebar</span>
+          </Button>
           {/* Navigation items can go here if needed */}
         </nav>
       </div>
