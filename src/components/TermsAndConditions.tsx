@@ -46,7 +46,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ className, ...p
                 clauseRefs.current.delete(clause.id);
               }
             }}
-            className="mb-6" // Removed card styling
+            className="mb-6" // Removed card styling to make it continuous
           >
             <p className="text-xs text-muted-foreground mb-1">
               Clause {clause.number} &bull; Category: {clause.category} &bull; Last Updated: {clause.lastUpdated}

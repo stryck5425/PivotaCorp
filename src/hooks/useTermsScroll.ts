@@ -24,7 +24,7 @@ interface UseTermsScrollReturn {
   loadMoreRef: React.RefObject<HTMLDivElement>;
   resetSession: () => void;
   clauseRefs: React.MutableRefObject<Map<string, HTMLElement>>;
-  scrollContainerRef: React.MutableRefObject<HTMLDivElement | null>; // Changed type here
+  scrollContainerRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
 const INITIAL_LOAD_COUNT = 20;
@@ -74,7 +74,7 @@ export function useTermsScroll(): UseTermsScrollReturn {
   const clauseRefs = useRef<Map<string, HTMLElement>>(new Map());
   const clausesEverSeen = useRef<Set<string>>(new Set()); // Changed to cumulative set
   const totalClausesGenerated = useRef(0);
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null); // Changed type here
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   const loadMoreClauses = useCallback(() => {
     if (loadingMore) return;
@@ -149,17 +149,19 @@ export function useTermsScroll(): UseTermsScrollReturn {
       }));
     }, STATS_UPDATE_INTERVAL);
 
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.addEventListener("scroll", handleScroll);
+    // Attach/re-attach scroll listener when scrollContainerRef.current changes
+    const currentScrollContainer = scrollContainerRef.current;
+    if (currentScrollContainer) {
+      currentScrollContainer.addEventListener("scroll", handleScroll);
     }
 
     return () => {
       clearInterval(interval);
-      if (scrollContainerRef.current) {
-        scrollContainerRef.current.removeEventListener("scroll", handleScroll);
+      if (currentScrollContainer) {
+        currentScrollContainer.removeEventListener("scroll", handleScroll);
       }
     };
-  }, []);
+  }, [scrollContainerRef.current]); // Dependency on scrollContainerRef.current
 
   // Update personal record
   useEffect(() => {
