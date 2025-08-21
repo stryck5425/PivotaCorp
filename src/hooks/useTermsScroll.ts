@@ -90,34 +90,52 @@ export function useTermsScroll(): UseTermsScrollReturn {
 
   // Load personal record from Firestore or Local Storage on auth state change
   useEffect(() => {
-    const loadPersonalRecord = async () => {
+    const loadAndSyncPersonalRecord = async () => {
       if (authLoading) return;
+
+      let firestoreRecordTime = 0;
+      let localStorageRecordTime = 0;
+
+      // Try to load from localStorage first, regardless of auth status
+      try {
+        const storedStats = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (storedStats) {
+          localStorageRecordTime = JSON.parse(storedStats).timeSpent || 0;
+        }
+      } catch (error) {
+        console.error("Failed to load personal record from localStorage:", error);
+      }
 
       if (user) {
         const userDocRef = doc(db, 'users', user.uid);
         const userDocSnap = await getDoc(userDocRef);
         if (userDocSnap.exists()) {
           const data = userDocSnap.data();
-          setPersonalRecordStats({ timeSpent: data.personalRecordTimeSpent || 0 });
+          firestoreRecordTime = data.personalRecordTimeSpent || 0;
         } else {
           // If user doc doesn't exist (shouldn't happen after signup), create it
           await setDoc(userDocRef, { username: user.email?.split('@')[0], personalRecordTimeSpent: 0, createdAt: new Date() });
-          setPersonalRecordStats({ timeSpent: 0 });
         }
+
+        // Determine the highest record and set it
+        const highestRecord = Math.max(firestoreRecordTime, localStorageRecordTime);
+        setPersonalRecordStats({ timeSpent: highestRecord });
+
+        // If localStorage had a higher record, update Firestore
+        if (localStorageRecordTime > firestoreRecordTime) {
+          await savePersonalRecord(localStorageRecordTime);
+        }
+        // Clear localStorage after merging to avoid stale data
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+
       } else {
-        // Not logged in, load from local storage
-        try {
-          const storedStats = localStorage.getItem(LOCAL_STORAGE_KEY);
-          setPersonalRecordStats(storedStats ? JSON.parse(storedStats) : { timeSpent: 0 });
-        } catch (error) {
-          console.error("Failed to load personal record from localStorage:", error);
-          setPersonalRecordStats({ timeSpent: 0 });
-        }
+        // Not logged in, just use the localStorage record
+        setPersonalRecordStats({ timeSpent: localStorageRecordTime });
       }
     };
 
-    loadPersonalRecord();
-  }, [user, authLoading]);
+    loadAndSyncPersonalRecord();
+  }, [user, authLoading, savePersonalRecord]);
 
 
   const loadMoreClauses = useCallback(() => {
