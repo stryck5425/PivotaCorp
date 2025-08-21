@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } => "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from '@/lib/utils';
@@ -30,7 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentSessionStats, personalRecordSt
   return (
     <aside
       className={cn(
-        "hidden lg:block w-64 p-4 border-r bg-sidebar sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto",
+        "p-4 border-r bg-sidebar sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto", // Removed hidden lg:block w-64
         className
       )}
       {...props}
