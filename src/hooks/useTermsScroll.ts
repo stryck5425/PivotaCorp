@@ -3,6 +3,7 @@ import { absurdClauses, lawCategories } from "@/constants/absurdClauses";
 import { useAuth } from "./useAuth";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { toast } from "sonner"; // Import toast for error notifications
 
 interface Clause {
   id: string;
@@ -68,22 +69,25 @@ export function useTermsScroll(): UseTermsScrollReturn {
 
   // Function to save personal record to Firestore or Local Storage
   const savePersonalRecord = useCallback(async (recordTime: number) => {
+    console.log("Attempting to save personal record:", recordTime, "User:", user ? user.uid : "Not logged in");
     if (user) {
       const userDocRef = doc(db, 'users', user.uid);
       try {
         await updateDoc(userDocRef, {
           personalRecordTimeSpent: recordTime,
         });
-        // console.log("Personal record saved to Firestore:", recordTime);
-      } catch (error) {
+        console.log("Personal record saved to Firestore successfully:", recordTime);
+      } catch (error: any) {
         console.error("Failed to save personal record to Firestore:", error);
+        toast.error(`Failed to save record to cloud: ${error.message}`);
       }
     } else {
       try {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ timeSpent: recordTime }));
-        // console.log("Personal record saved to localStorage:", recordTime);
-      } catch (error) {
+        console.log("Personal record saved to localStorage successfully:", recordTime);
+      } catch (error: any) {
         console.error("Failed to save personal record to localStorage:", error);
+        toast.error(`Failed to save record locally: ${error.message}`);
       }
     }
   }, [user]);
@@ -91,7 +95,10 @@ export function useTermsScroll(): UseTermsScrollReturn {
   // Load personal record from Firestore or Local Storage on auth state change
   useEffect(() => {
     const loadAndSyncPersonalRecord = async () => {
-      if (authLoading) return;
+      if (authLoading) {
+        console.log("Auth loading, skipping record load.");
+        return;
+      }
 
       let firestoreRecordTime = 0;
       let localStorageRecordTime = 0;
@@ -101,36 +108,44 @@ export function useTermsScroll(): UseTermsScrollReturn {
         const storedStats = localStorage.getItem(LOCAL_STORAGE_KEY);
         if (storedStats) {
           localStorageRecordTime = JSON.parse(storedStats).timeSpent || 0;
+          console.log("Loaded from localStorage:", localStorageRecordTime);
         }
       } catch (error) {
         console.error("Failed to load personal record from localStorage:", error);
       }
 
       if (user) {
+        console.log("User logged in, attempting to load from Firestore:", user.uid);
         const userDocRef = doc(db, 'users', user.uid);
         const userDocSnap = await getDoc(userDocRef);
         if (userDocSnap.exists()) {
           const data = userDocSnap.data();
           firestoreRecordTime = data.personalRecordTimeSpent || 0;
+          console.log("Loaded from Firestore:", firestoreRecordTime);
         } else {
           // If user doc doesn't exist (shouldn't happen after signup), create it
+          console.log("User document not found in Firestore, creating with 0 record.");
           await setDoc(userDocRef, { username: user.email?.split('@')[0], personalRecordTimeSpent: 0, createdAt: new Date() });
         }
 
         // Determine the highest record and set it
         const highestRecord = Math.max(firestoreRecordTime, localStorageRecordTime);
         setPersonalRecordStats({ timeSpent: highestRecord });
+        console.log("Personal record set to highest (Firestore vs Local):", highestRecord);
 
         // If localStorage had a higher record, update Firestore
         if (localStorageRecordTime > firestoreRecordTime) {
+          console.log("Local storage record is higher, updating Firestore.");
           await savePersonalRecord(localStorageRecordTime);
         }
         // Clear localStorage after merging to avoid stale data
         localStorage.removeItem(LOCAL_STORAGE_KEY);
+        console.log("Local storage cleared after sync.");
 
       } else {
         // Not logged in, just use the localStorage record
         setPersonalRecordStats({ timeSpent: localStorageRecordTime });
+        console.log("User not logged in, personal record set from localStorage:", localStorageRecordTime);
       }
     };
 
@@ -184,6 +199,7 @@ export function useTermsScroll(): UseTermsScrollReturn {
     // Only update and save if current session time surpasses the personal record
     if (currentSessionStats.timeSpent > personalRecordStats.timeSpent) {
       const newRecordTime = currentSessionStats.timeSpent;
+      console.log(`New personal record achieved: ${newRecordTime}s (Previous: ${personalRecordStats.timeSpent}s)`);
       setPersonalRecordStats({ timeSpent: newRecordTime }); // Update state immediately
 
       // Save to Firestore/localStorage immediately
@@ -227,6 +243,7 @@ export function useTermsScroll(): UseTermsScrollReturn {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTop = 0; // Scroll to top on reset
     }
+    console.log("Session reset.");
   }, []);
 
   return {
