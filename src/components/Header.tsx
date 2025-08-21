@@ -1,9 +1,9 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Menu } from 'lucide-react';
+import { Menu, Github } from 'lucide-react'; // Import Github icon
 import { Link } from 'react-router-dom';
-import NavigationLinks from './NavigationLinks'; // Import the new component
+import NavigationLinks from './NavigationLinks';
 
 interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   companyName: string;
@@ -33,6 +33,19 @@ const Header: React.FC<HeaderProps> = ({ companyName, tagline, className, onMenu
           {/* Desktop navigation links */}
           <NavigationLinks className="hidden lg:flex" />
           
+          {/* GitHub Button */}
+          <a 
+            href="https://github.com/stryck5425/PivotaCorp" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hidden lg:block" // Show only on desktop
+          >
+            <Button variant="ghost" size="icon">
+              <Github className="h-5 w-5" />
+              <span className="sr-only">GitHub Repository</span>
+            </Button>
+          </a>
+
           {/* Mobile menu button */}
           <Button
             variant="ghost"
