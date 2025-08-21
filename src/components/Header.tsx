@@ -29,8 +29,8 @@ const Header: React.FC<HeaderProps> = ({ companyName, tagline, className, onMenu
           </p>
         </div>
         <nav className="ml-auto flex items-center space-x-4">
-          {/* Legal Mentions button for desktop */}
-          <Link to="/legal-mentions" className="hidden lg:block">
+          {/* Legal Mentions button - now always visible */}
+          <Link to="/legal-mentions">
             <Button variant="ghost">
               Legal Mentions
             </Button>
