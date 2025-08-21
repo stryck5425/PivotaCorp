@@ -29,6 +29,7 @@ This project automatically generates an infinite stream of satirical terms and c
 - Infinite scroll for a never-ending reading experience
 - Modern, responsive interface
 - No real data collection, no ads, no tracking
+- **World Record Board**: Check out the leaderboard of users who have spent the most time reading the Terms & Conditions! 🏆
 
 ---
 
@@ -78,3 +79,5 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 ---
 
 > Pivota Corp™ – Because no one ever reads the fine print. At least here, it’s for laughs!
+
+
