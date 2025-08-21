@@ -12,7 +12,7 @@ const Index = () => {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header
-        companyName="SynergyCorp™"
+        companyName="OmniCorp Global™"
         tagline="Innovating Tomorrow's Solutions, Today. (Terms Apply. Always.)"
         onMenuClick={() => setIsSheetOpen(true)} // Open sheet on menu click
       />

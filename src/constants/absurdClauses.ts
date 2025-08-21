@@ -69,7 +69,7 @@ export const absurdClauses = [
   },
   {
     title: "Metaverse Avatar Rights",
-    content: "Any avatars created while using our service become the intellectual property of SynergyCorp. We reserve the right to use your digital likeness for corporate presentations, virtual team-building exercises, and our upcoming NFT collection titled 'Employees We Wish We Had.'"
+    content: "Any avatars created while using our service become the intellectual property of OmniCorp Global. We reserve the right to use your digital likeness for corporate presentations, virtual team-building exercises, and our upcoming NFT collection titled 'Employees We Wish We Had.'"
   },
   {
     title: "Telepathic Communication Monitoring",
@@ -81,7 +81,7 @@ export const absurdClauses = [
   },
   {
     title: "Environmental Impact Offsetting",
-    content: "To offset the environmental impact of reading these digital terms, users agree to plant one virtual tree for every 50 clauses read. Virtual trees may be purchased from our subsidiary, EcoSynergy Digital Forestry Solutions, at competitive rates."
+    content: "To offset the environmental impact of reading these digital terms, users agree to plant one virtual tree for every 50 clauses read. Virtual trees may be purchased from our subsidiary, OmniCorp Global Digital Forestry Solutions, at competitive rates."
   },
   {
     title: "Space Law Jurisdiction",
@@ -89,7 +89,7 @@ export const absurdClauses = [
   },
   {
     title: "Time Travel Paradox Liability",
-    content: "Users who travel back in time and prevent themselves from agreeing to these terms create a paradox for which SynergyCorp cannot be held responsible. Any resulting timeline disruptions, alternate reality confusion, or butterfly effect consequences are the user's sole responsibility."
+    content: "Users who travel back in time and prevent themselves from agreeing to these terms create a paradox for which OmniCorp Global cannot be held responsible. Any resulting timeline disruptions, alternate reality confusion, or butterfly effect consequences are the user's sole responsibility."
   },
   {
     title: "Digital Afterlife Data Management",
@@ -117,7 +117,7 @@ export const absurdClauses = [
   },
   {
     title: "Cryptocurrency Loyalty Program",
-    content: "Loyalty points earned through our service will be paid in SynergyCoin, our proprietary cryptocurrency that can only be spent at our virtual company store on items like digital branded merchandise and NFTs of our corporate mission statement."
+    content: "Loyalty points earned through our service will be paid in OmniCoin, our proprietary cryptocurrency that can only be spent at our virtual company store on items like digital branded merchandise and NFTs of our corporate mission statement."
   },
   {
     title: "Interdimensional Data Sharing",

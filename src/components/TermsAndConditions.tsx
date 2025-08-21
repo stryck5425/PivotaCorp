@@ -28,10 +28,10 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ className, ...p
       {...props}
     >
       <h2 className="text-4xl font-extrabold text-center mb-6 text-primary">
-        SynergyCorp™ Official Terms & Conditions
+        OmniCorp Global™ Official Terms & Conditions
       </h2>
       <p className="text-center text-lg text-muted-foreground mb-10 max-w-3xl mx-auto">
-        Welcome to the legal framework that underpins your entire digital existence with SynergyCorp™. Please read these terms carefully, as they govern your use of our services, your digital soul, and potentially your future. By continuing to scroll, you irrevocably agree to all clauses, present, past, and retroactively applied.
+        Welcome to the legal framework that underpins your entire digital existence with OmniCorp Global™. Please read these terms carefully, as they govern your use of our services, your digital soul, and potentially your future. By continuing to scroll, you irrevocably agree to all clauses, present, past, and retroactively applied.
       </p>
 
       <div className="max-w-4xl mx-auto">
