@@ -2,6 +2,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
+import { Link } from 'react-router-dom'; // Import Link for navigation
 
 interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   companyName: string;
@@ -28,6 +29,12 @@ const Header: React.FC<HeaderProps> = ({ companyName, tagline, className, onMenu
           </p>
         </div>
         <nav className="ml-auto flex items-center space-x-4">
+          {/* Legal Mentions button for desktop */}
+          <Link to="/legal-mentions" className="hidden lg:block">
+            <Button variant="ghost">
+              Legal Mentions
+            </Button>
+          </Link>
           {/* Menu button for small screens */}
           <Button
             variant="ghost"

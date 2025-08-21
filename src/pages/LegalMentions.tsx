@@ -15,31 +15,31 @@ const LegalMentions: React.FC<LegalMentionsProps> = ({ className, ...props }) =>
       {...props}
     >
       <h2 className="text-4xl font-extrabold text-center mb-6 text-primary">
-        Mentions Légales de Pivota Corp™
+        Pivota Corp™ Legal Mentions
       </h2>
       <p className="text-center text-lg text-muted-foreground mb-10">
-        Bienvenue sur la page des Mentions Légales de Pivota Corp™. Contrairement à nos Conditions Générales, cette section est conçue pour être réellement compréhensible.
+        Welcome to Pivota Corp™'s Legal Mentions page. Unlike our Terms & Conditions, this section is designed to be genuinely understandable.
       </p>
 
       <div className="space-y-6">
         <p>
-          Ce site web, "Pivota Corp™ Official Terms & Conditions", est une œuvre satirique et fictive. Il a été créé dans le but d'explorer et de parodier la complexité, l'absurdité et la longueur souvent démesurée des conditions générales d'utilisation que nous acceptons quotidiennement sans les lire.
+          This website, "Pivota Corp™ Official Terms & Conditions", is a satirical and fictional work. It was created with the aim of exploring and parodying the often excessive complexity, absurdity, and length of the terms and conditions we daily accept without reading.
         </p>
         <p>
-          Toutes les clauses, les noms d'entreprise, les personnages et les situations décrits sur ce site sont purement imaginaires et ne doivent en aucun cas être pris au sérieux ou considérés comme des conseils juridiques ou commerciaux. Toute ressemblance avec des entreprises ou des situations existantes est fortuite et involontaire.
+          All clauses, company names, characters, and situations described on this site are purely imaginary and should under no circumstances be taken seriously or considered as legal or commercial advice. Any resemblance to existing companies or situations is coincidental and unintentional.
         </p>
         <p>
-          L'objectif principal est de divertir et de sensibiliser de manière humoristique à l'importance (et parfois à l'impossibilité) de comprendre les documents légaux en ligne. Nous espérons que vous apprécierez cette expérience de lecture unique et que cela vous incitera à jeter un œil plus attentif aux "vraies" conditions générales à l'avenir.
+          The main objective is to entertain and humorously raise awareness about the importance (and sometimes the impossibility) of understanding online legal documents. We hope you enjoy this unique reading experience and that it encourages you to take a closer look at "real" terms and conditions in the future.
         </p>
         <p>
-          Ce site ne collecte aucune donnée personnelle réelle et n'a aucune intention commerciale. Il s'agit d'un projet de démonstration et d'exploration des technologies web modernes, notamment React, TypeScript et Tailwind CSS, dans un cadre ludique et éducatif.
+          This site does not collect any real personal data and has no commercial intent. It is a demonstration project and an exploration of modern web technologies, including React, TypeScript, and Tailwind CSS, within a fun and educational framework.
         </p>
       </div>
 
       <div className="mt-12 text-center">
         <Link to="/">
           <Button variant="outline" className="text-primary-foreground bg-primary hover:bg-primary/90">
-            Retour aux Conditions Générales
+            Return to Terms & Conditions
           </Button>
         </Link>
       </div>
